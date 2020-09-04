@@ -21,6 +21,9 @@
         .black {
             color: #292b2c;
         }
+        #originTable {
+            margin-bottom: 2rem;
+        }
     </style>
 </head>
 
@@ -31,9 +34,6 @@
                 <div class="card">
                     <div class="card-header text-center">
                         <h3>
-                            <a href="https://github.com/techgaun/active-forks" class="black">
-                                <i class="fa fa-github-alt pull-left" aria-hidden="true"></i>
-                            </a>
                             Active GitHub Forks
                         </h3>
                     </div>
@@ -42,7 +42,7 @@
                         <div class="form-group">
                           <form id="form" role="form">
                               <div class="input-group">
-                                  <input id="q" name="q" class="form-control" type="text" placeholder="techgaun/github-dorks">
+                                  <input id="q" name="q" class="form-control" type="text" placeholder="user/repo">
                                   <span class="input-group-btn">
                                       <button id="find" onClick="fetchData()" type="button" class="btn btn-primary">
                                           <i id="spinner" class="fa fa-spinner fa-pulse fa-fw" hidden></i> Find
@@ -53,6 +53,11 @@
                         </div>
 
                         <div id="data-body"></div>
+
+                        <h4 class="text-center">Original repository</h4>
+                        <table id="originTable" class="display" width="100%"></table>
+
+                        <h4 class="text-center">Forks</h4>
                         <table id="forkTable" class="display" width="100%"></table>
                     </div>
                     <div id="footer" class="card-footer text-muted"></div>

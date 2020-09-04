@@ -34,12 +34,15 @@ function fetchData() {
   }
 }
 
-function updateDT(data) {
+function updateDT(data, table) {
   // Remove any alerts, if any:
   if ($('.alert')) $('.alert').remove();
 
   // Format dataset and redraw DataTable. Use second index for key name
   const forks = [];
+  if (!Array.isArray(data)) {
+    data = [data]
+  }
   for (let fork of data) {
     fork.repository = `<a href="https://github.com/${fork.full_name}">${fork.full_name}</a>`;
     fork.ownerName = fork.owner.login;
@@ -52,7 +55,7 @@ function updateDT(data) {
   const dataSet = forks.map(fork =>
     window.columnNamesMap.map(colNM => fork[colNM[1]])
   );
-  window.forkTable
+  table
     .clear()
     .rows.add(dataSet)
     .draw();
@@ -80,24 +83,34 @@ function initDT() {
     .map(pair => pair[0])
     .indexOf(sortColName);
 
+  let colMapper = window.columnNamesMap.map(colNM => {
+    return {
+      title: colNM[0],
+      render:
+        colNM[1] === 'pushed_at' || colNM[1] === 'created_at' || colNM[1] === 'updated_at'
+          ? (data, type, _row) => {
+              if (type === 'display') {
+                return moment(data).format('YYYY-MM-DD HH:mm');
+              }
+              return data;
+            }
+          : null,
+    };
+  });
+
   // Use first index for readable column name
   // we use moment's fromNow() if we are rendering for `pushed_at`; better solution welcome
   window.forkTable = $('#forkTable').DataTable({
-    columns: window.columnNamesMap.map(colNM => {
-      return {
-        title: colNM[0],
-        render:
-          colNM[1] === 'pushed_at' || colNM[1] === 'created_at' || colNM[1] === 'updated_at'
-            ? (data, type, _row) => {
-                if (type === 'display') {
-                  return moment(data).format('YYYY-MM-DD HH:mm');
-                }
-                return data;
-              }
-            : null,
-      };
-    }),
+    columns: colMapper,
     order: [[sortColumnIdx, 'desc']],
+  });
+
+  window.originTable = $('#originTable').DataTable({
+    paging: false,
+    searching: false,
+    ordering: false,
+    info: false,
+    columns: colMapper,
   });
 }
 
@@ -115,7 +128,19 @@ function fetchAndShow(repo) {
     })
     .then(data => {
       console.log(data);
-      updateDT(data);
+      updateDT(data, window.forkTable);
+
+      return fetch(
+        `https://api.github.com/repos/${repo}`
+      )
+    })
+    .then(response => {
+      if (!response.ok) throw Error(response.statusText);
+      return response.json();
+    })
+    .then(data => {
+      console.log(data);
+      updateDT(data, window.originTable);
     })
     .catch(error => {
       const msg =
