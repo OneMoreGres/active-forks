@@ -4,7 +4,7 @@
 
 This project allows you to find the most active forks of a repository.
 
-[Find Active Fork](https://techgaun.github.io/active-forks/index.html)
+[Find Active Fork](https://onemoregres.github.io/active-forks/index.html)
 
 ## As Bookmarklet
 
@@ -17,7 +17,7 @@ Any time you're on a Github repo you can click the bookmarklet
 and it'll bring up the Active Forks of that repo.
 
 ```javascript
-javascript:var title=document.title;if(title){  thing=title.split(':');var newPage = 'https://techgaun.github.io/active-forks/index.html#'+thing[0];open(newPage ,'targetname')}
+javascript:var title=document.title;if(title){  thing=title.split(':');var newPage = 'https://onemoregres.github.io/active-forks/index.html#'+thing[0];open(newPage ,'targetname')}
 ```
 
 ![Screenshot](screenshot.png "Active Forks in Action")
