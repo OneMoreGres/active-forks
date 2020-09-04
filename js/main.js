@@ -41,8 +41,12 @@ function updateDT(data) {
   // Format dataset and redraw DataTable. Use second index for key name
   const forks = [];
   for (let fork of data) {
-    fork.repoLink = `<a href="https://github.com/${fork.full_name}">Link</a>`;
+    fork.repository = `<a href="https://github.com/${fork.full_name}">${fork.full_name}</a>`;
     fork.ownerName = fork.owner.login;
+    let push = moment(fork.pushed_at);
+    let create = moment(fork.created_at);
+    let update = moment(fork.updated_at);
+    fork.changed = (push.diff(create, 'minutes') > 0 || update.diff(create, 'minutes') > 0) ? '+' : '-';
     forks.push(fork);
   }
   const dataSet = forks.map(fork =>
@@ -57,16 +61,17 @@ function updateDT(data) {
 function initDT() {
   // Create ordered Object with column name and mapped display name
   window.columnNamesMap = [
-    // [ 'Repository', 'full_name' ],
-    ['Link', 'repoLink'], // custom key
-    ['Owner', 'ownerName'], // custom key
-    ['Name', 'name'],
+    ['Repository', 'repository'], // custom key
     ['Branch', 'default_branch'],
     ['Stars', 'stargazers_count'],
     ['Forks', 'forks'],
-    ['Open Issues', 'open_issues_count'],
+    ['Issues', 'open_issues_count'],
+    ['Watchers', 'watchers'],
     ['Size', 'size'],
-    ['Last Push', 'pushed_at'],
+    ['Pushed', 'pushed_at'],
+    ['Updated', 'updated_at'],
+    ['Created', 'created_at'],
+    ['Changed since fork', 'changed'],
   ];
 
   // Sort by stars:
@@ -82,10 +87,10 @@ function initDT() {
       return {
         title: colNM[0],
         render:
-          colNM[1] === 'pushed_at'
+          colNM[1] === 'pushed_at' || colNM[1] === 'created_at' || colNM[1] === 'updated_at'
             ? (data, type, _row) => {
                 if (type === 'display') {
-                  return moment(data).fromNow();
+                  return moment(data).format('YYYY-MM-DD HH:mm');
                 }
                 return data;
               }
