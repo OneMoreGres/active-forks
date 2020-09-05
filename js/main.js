@@ -69,12 +69,12 @@ function initDT() {
     ['Stars', 'stargazers_count'],
     ['Forks', 'forks'],
     ['Issues', 'open_issues_count'],
-    ['Watchers', 'watchers'],
-    ['Size', 'size'],
+    ['Watched', 'watchers'],
+    // ['Size', 'size'],
     ['Pushed', 'pushed_at'],
     ['Updated', 'updated_at'],
     ['Created', 'created_at'],
-    ['Changed since fork', 'changed'],
+    ['Edited', 'changed'],
   ];
 
   // Sort by stars:
